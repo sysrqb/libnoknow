@@ -31,11 +31,12 @@ test:  libgtest.a ${SRCS} ${TESTS}
 		${SRCS_OBJ} ${TESTS} ${GTEST_DIR}/src/gtest_main.cc \
 		libgtest_clang.a -o nok_tests_clang
 
-nok:
-	gcc -Wall -g -fstack-protector-all -I src/ -o nok_c main.c src/statemachine.c src/noknow.c
-	g++ -Wall -g -fstack-protector-all -I src/ -o nok_cpp main.c src/statemachine.c src/noknow.c
-	clang -Wall -g -fstack-protector-all -I src/ -o nok_c_clang main.c src/statemachine.c src/noknow.c
-	clang++ -x c++ -Wall -g -fstack-protector-all -I src/ -o nok_cpp_clang main.c src/statemachine.c src/noknow.c
+nok: src/statemachine.c src/noknow.c
+	gcc -Wall -g -shared -Wl,-soname,libnoknow.so.0 -fstack-protector-all -fPIC -I src/ -o libnoknow.so.0 src/statemachine.c src/noknow.c
+	g++ -Wall -g -shared -Wl,-soname,libnoknow.so.0 -fstack-protector-all -fPIC -I src/ -o libnoknow.so.0cpp src/statemachine.c src/noknow.c
+	clang -Wall -g -shared -Wl,-soname,libnoknow.so.0 -fstack-protector-all -fPIC -I src/ -o libnoknow.so.0cc src/statemachine.c src/noknow.c
+	clang++ -x c++ -Wall -g -shared -Wl,-soname,libnoknow.so.0 -fstack-protector-all -fPIC -I src/ -o libnoknow.so.0ccpp src/statemachine.c src/noknow.c
+	gcc -o nok_bin src/empty_main.c libnoknow.so.0
 
 clean:
-	rm *.o
+	rm -f *.o *.a *.gc* nok_* libnok_* libnoknow*

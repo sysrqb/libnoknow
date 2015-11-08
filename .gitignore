@@ -1,0 +1,7 @@
+ext/googletest
+*.o
+*.a
+*.gcno
+*.gcda
+*.gcov
+nok_*
