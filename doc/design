@@ -1,0 +1,102 @@
+The purpose of this library is for providing a usable, useful, and safe
+implementation of many oblivious transfer (OT) protocols. Many protocols
+were designed over the last >30 years but there are not many implementations
+despite the increasing usefulness (and need) for them. Below is how this
+library is designed.
+
+-- --
+  -
+
+The library will have two processes, making dropping unneeded privileges
+easy. From the perspective of an application developer, this library
+should be obvious and easy to use. This is designed for them.
+
+There are three distinct layers of abstraction and used here: bignum,
+cryptosystems, and serialization. Bignum may be supplied by a few different
+libraries (with different licenses) so we must be flexible. Similarly, there
+are numerous libraries we can use for different cryptosystems, so we want to
+be able to switch between them easily. Serializing the value may take many
+forms, we don't need to choice one.
+
+
+Description from the top-down.
+
+Blackbox View:
+
+  Setup/Init:
+    Applications must tell the library:
+      - Which OT protocol it should use
+      - Which serialization method
+      - Whether it's transmitter or receiver
+      - its transmission method:
+        - via an open file descriptor for read/write
+           - Proxied connections should be handled here
+        - callback function and letting the application control communication
+        - address/hostname for creating direct connection
+
+    Parallel instantiations must be supported
+
+  Transferring:
+    After the library knows how it's transmitting the data and which protocol is
+    to be used, the last piece of information it needs from the application is
+    what needs to be transmitted/received obliviously.
+      - This should (ideally) be done with a single function call where the
+        transmitter provides a list of the datum potentially available or the
+        receiver specifies which index it wants.
+        - This should be a simple function call barring unforeseen complexity
+
+  Status/Progress Values:
+    The library should provide useful values indicating the percentage complete
+    and a useful string describing the current state.
+
+
+Library View (same memory address space as application):
+
+  Setup/Init:
+    Application specifies the OT, serialization method, and communication
+    medium
+      - Initialize all internal structures
+      - Fork child-worker processes with useful IPC mechanism
+
+  Transferring:
+    If we did not yet fork, easy. Save this information appropriately in
+    internal structures.
+    If post-fork:
+      - If transmitter-side, take data from application and send them to
+        child for processing and transmission.
+      - If receiver-side, get index from application and send it to child.
+    - Handle success and aborting sanely
+
+  Status/Progress Values:
+    Receive status updates from child and cache them for if/when the
+    application requests it.
+      - There may be multiple current-status for each invocation.
+
+
+Library View (child process):
+
+  Setup/Init:
+    - After successfully forking, generate any cryptographic material needed
+      for the specified OT protocol.
+    - Initialize any protocol-dependent state
+    - Begin communicating with peer
+      - As much as possible depending on the defined medium
+
+  Transferring:
+    - Maintain internal state
+    - Block if needed data not available
+    - If available, use data in protocol and transmit 
+    - When a value is received, send it to parent
+    - If abort state is reached, abort the protocol and tell the parent
+
+  Status/Progress Values:
+    - For every step there must be a defined status
+    - Transmit new status and status string to parent
+
+
+
+Notes/Ideas/Ponies:
+  - We should probably use something like libevent (at some point)
+  - We should support negotiating the "best" protocol with the peer
+    - Letting the application specify "any" or provide a subset of the
+      supported protocols

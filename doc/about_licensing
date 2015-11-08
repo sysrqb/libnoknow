@@ -1,0 +1,14 @@
+This document if for general information about the licensing. This may change
+over time. This library is currenly an idea with very little written code.
+
+After many hours, it was decided that this library should be licensed under
+the GPL. Without going into too many details of the reasoning, this allows
+for writing a library which is hoped will benefit the world and the license
+sufficiently restricts the freedom of developers such that (I hope)
+the code is not taken and integrated into a software project which is only
+available to those who can afford it. I hope this library is good enough and
+of high enough quality that someone wants this.
+
+That being said, the GPL is only a baseline. I will relicense the code,
+for as long as I am able, on a case-by-case basis, specifically for other
+free software projects which do not want the restrictions the GPL imposes.
