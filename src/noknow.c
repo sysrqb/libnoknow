@@ -16,57 +16,98 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
+
+/* libnok include */
 #include <noknow.h>
 
 
 int
 libnok_set_protocol(libnok_context_t *ctx, libnok_transfer_protocol_t proto)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (proto >= NOT_SUPPORTED_XFER_PROTOCOL)
+    return -1;
+  if (proto < 0)
+    return -1;
+  ctx->proto = proto;
+  return 0;
 }
 
 int
 libnok_set_serialization(libnok_context_t *ctx,
                          libnok_serialization_t serial)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (serial >= NOT_SUPPORTED_SERIAL_METHOD)
+    return -1;
+  if (serial < 0)
+    return -1;
+  ctx->serial = serial;
+  return 0;
 }
 
 int
 libnok_set_player(libnok_context_t *ctx, libnok_player_t player)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (player > UNKNOWN_PLAYER)
+    return -1;
+  if (player < 0)
+    return -1;
+  ctx->player = player;
+  return 0;
 }
 
 int
 libnok_set_communication_method(libnok_context_t *ctx,
                                 libnok_communication_method_t *comm_method)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (comm_method == NULL)
+    return -1;
+  if (comm_method->dev >= NOT_SUPPORTED_COMM_DEV)
+    return -1;
+  if (comm_method->dev < 0)
+    return -1;
+  ctx->comm = comm_method;
+  return 0;
 }
 
 libnok_transfer_protocol_t
 libnok_get_transfer_protocol(libnok_context_t *ctx)
 {
-  return UNKNOWN_XFER_PROTOCOL;
+  if (ctx == NULL)
+    return UNKNOWN_XFER_PROTOCOL;
+  return ctx->proto;
 }
 
 libnok_serialization_t
 libnok_get_serialization(libnok_context_t *ctx)
 {
-  return UNKNOWN_SERIAL_METHOD;
+  if (ctx == NULL)
+    return UNKNOWN_SERIAL_METHOD;
+  return ctx->serial;
 }
 
 libnok_player_t
 libnok_get_player(libnok_context_t *ctx)
 {
-  return UNKNOWN_PLAYER;
+  if (ctx == NULL)
+    return UNKNOWN_PLAYER;
+  return ctx->player;
 }
 
 libnok_communication_method_t *
 libnok_get_communication_method(libnok_context_t *ctx)
 {
-  return NULL;
+  if (ctx == NULL)
+    return NULL;
+  return ctx->comm;
 }
 
 libnok_context_t *
@@ -76,7 +117,30 @@ libnok_init(libnok_transfer_protocol_t proto,
             libnok_communication_method_t *comm_meth)
 
 {
-  return NULL;
+  libnok_context_t *ctx = NULL;
+  if (proto > NOT_SUPPORTED_XFER_PROTOCOL)
+    return NULL;
+  if (serial > NOT_SUPPORTED_SERIAL_METHOD)
+    return NULL;
+  if (player > UNKNOWN_PLAYER)
+    return NULL;
+  if (comm_meth == NULL) {
+    comm_meth =
+        (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
+    if (comm_meth == NULL)
+      return NULL;
+  } else {
+    if (comm_meth->dev > NOT_SUPPORTED_COMM_DEV)
+      return NULL;
+  }
+  ctx = (libnok_context_t *) malloc(sizeof(*ctx));
+  if (ctx == NULL)
+    return NULL;
+  ctx->proto = proto;
+  ctx->serial = serial;
+  ctx->player = player;
+  ctx->comm = comm_meth;
+  return ctx;
 }
 
 int

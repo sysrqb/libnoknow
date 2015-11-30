@@ -65,8 +65,12 @@ typedef struct libnok_communication_method_s {
 } libnok_communication_method_t;
 
 /* Prototype for internally-defined structure for holding state. */
-struct libnok_context_s;
-typedef struct libnok_context_s libnok_context_t;
+typedef struct libnok_context_s {
+  libnok_transfer_protocol_t proto;
+  libnok_serialization_t serial;
+  libnok_player_t player;
+  libnok_communication_method_t *comm;
+} libnok_context_t;
 
 /* For the specified instance ctx, (re)define the protocol */
 int libnok_set_protocol(libnok_context_t *ctx,

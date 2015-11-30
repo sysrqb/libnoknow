@@ -16,8 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 
 #include <gtest/gtest.h>
+
+/* libnok include */
 #include <noknow.h>
 
 /* Test init() */
@@ -30,9 +33,10 @@ TEST(CtxInstantiation, CtxInit)
   libnok_context_t *ctx = NULL;
 
   ctx = libnok_init(proto, serial, player, comm_meth);
-  EXPECT_EQ((libnok_context_t *)NULL, ctx);
-  if (ctx != NULL)
-    goto err_free;
+  ASSERT_NE((libnok_context_t *)NULL, ctx);
+  EXPECT_NE((libnok_communication_method_t *)NULL, ctx->comm);
+  free(ctx->comm);
+  free(ctx);
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
@@ -224,7 +228,7 @@ TEST(CtxInstantiation, GetProtocol)
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(-1, libnok_get_transfer_protocol(NULL));
+  EXPECT_EQ(UNKNOWN_XFER_PROTOCOL, libnok_get_transfer_protocol(NULL));
   EXPECT_EQ(proto, libnok_get_transfer_protocol(ctx));
   EXPECT_EQ(0, libnok_set_protocol(ctx, proto));
   EXPECT_EQ(proto, libnok_get_transfer_protocol(ctx));
@@ -252,7 +256,7 @@ TEST(CtxInstantiation, GetSerialization)
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(-1, libnok_get_serialization(NULL));
+  EXPECT_EQ(UNKNOWN_SERIAL_METHOD, libnok_get_serialization(NULL));
   EXPECT_EQ(serial, libnok_get_serialization(ctx));
   EXPECT_EQ(0, libnok_set_serialization(ctx, serial));
   EXPECT_EQ(serial, libnok_get_serialization(ctx));
@@ -280,7 +284,7 @@ TEST(CtxInstantiation, GetPlayer)
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(-1, libnok_get_player(NULL));
+  EXPECT_EQ(UNKNOWN_PLAYER, libnok_get_player(NULL));
   EXPECT_EQ(player, libnok_get_player(ctx));
   EXPECT_EQ(0, libnok_set_player(ctx, player));
   EXPECT_EQ(player, libnok_get_player(ctx));
