@@ -20,35 +20,35 @@
 
 /* List of supported oblivious transfer protocols */
 typedef enum libnok_transfer_protocol {
-  UNKNOWN_XFER_PROTOCOL,
-  NOT_SUPPORTED_XFER_PROTOCOL
+  LIBNOK_UNKNOWN_XFER_PROTOCOL,
+  LIBNOK_NOT_SUPPORTED_XFER_PROTOCOL
 } libnok_transfer_protocol_t;
 
 /* List of supported serialization mechanisms */
 typedef enum libnok_serialization {
-  UNKNOWN_SERIAL_METHOD,
-  NOT_SUPPORTED_SERIAL_METHOD
+  LIBNOK_UNKNOWN_SERIAL_METHOD,
+  LIBNOK_NOT_SUPPORTED_SERIAL_METHOD
 } libnok_serialization_t;
 
 /* Choose a side, either side */
 typedef enum libnok_player {
-  RECEIVER,
-  TRANSMITTER,
-  UNKNOWN_PLAYER
+  LIBNOK_RECEIVER,
+  LIBNOK_TRANSMITTER,
+  LIBNOK_UNKNOWN_PLAYER
 } libnok_player_t;
 
 /* How do we transmit and receive data? */
 typedef enum libnok_communication_device {
   /* Is it an open file descriptor? */
-  FILEDESCR_COMM,
+  LIBNOK_FILEDESCR_COMM,
   /* It is using callback function? */
-  CALLBACK_COMM,
+  LIBNOK_CALLBACK_COMM,
   /* Should we establish the connection ourselves? */
-  INTERNAL_COMM,
+  LIBNOK_INTERNAL_COMM,
   /* Unknown device */
-  UNKNOWN_COMM_DEV,
+  LIBNOK_UNKNOWN_COMM_DEV,
   /* Unsupported device */
-  NOT_SUPPORTED_COMM_DEV
+  LIBNOK_NOT_SUPPORTED_COMM_DEV
 } libnok_communication_device_t;
 
 /* Define how we should communicate with the peer */
