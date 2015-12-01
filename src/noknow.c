@@ -17,6 +17,7 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 
 /* libnok include */
 #include <noknow.h>
@@ -110,6 +111,60 @@ libnok_get_communication_method(libnok_context_t *ctx)
   return ctx->comm;
 }
 
+libnok_communication_method_t *
+libnok_create_filedescr_comm_method(const int fd)
+{
+  libnok_communication_method_t *comm = NULL;
+  if (fd < 0)
+    return NULL;
+  comm = (libnok_communication_method_t *)malloc(sizeof(*comm));
+  if (comm == NULL)
+    return NULL;
+  memset(comm, 0, sizeof(*comm));
+  comm->fd = fd;
+  comm->dev = LIBNOK_FILEDESCR_COMM;
+  return comm;
+}
+
+libnok_communication_method_t *
+libnok_create_internal_comm_method(const char *hostname, const size_t len)
+{
+  libnok_communication_method_t *comm = NULL;
+  if (hostname == NULL)
+    return NULL;
+  if (len < 1)
+    return NULL;
+  comm = (libnok_communication_method_t *)malloc(sizeof(*comm));
+  if (comm == NULL)
+    return NULL;
+  memset(comm, 0, sizeof(*comm));
+  comm->hostname = strndup(hostname, len);
+  comm->hostname_len = len;
+  comm->dev = LIBNOK_INTERNAL_COMM;
+  return comm;
+}
+
+libnok_communication_method_t *
+libnok_create_callback_comm_method(int (*send_cb)(const void *buf,
+				                  size_t count),
+                                   int (*recv_cb)(const void *buf,
+				                  size_t count))
+{
+  libnok_communication_method_t *comm = NULL;
+  if (send_cb == NULL)
+    return NULL;
+  if (recv_cb == NULL)
+    return NULL;
+  comm = (libnok_communication_method_t *)malloc(sizeof(*comm));
+  if (comm == NULL)
+    return NULL;
+  memset(comm, 0, sizeof(*comm));
+  comm->send_cb = send_cb;
+  comm->recv_cb = recv_cb;
+  comm->dev = LIBNOK_CALLBACK_COMM;
+  return comm;
+}
+
 libnok_context_t *
 libnok_init(libnok_transfer_protocol_t proto,
             libnok_serialization_t serial,
@@ -148,12 +203,32 @@ int
 libnok_data_for_transfer(libnok_context_t *ctx, void **data,
                          size_t datum_size, size_t len)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (datum_size < 1)
+    return -1;
+  if (data == NULL)
+    return -1;
+  if (*data == NULL)
+    return -1;
+  if (len < 1)
+    return -1;
+  return 0;
 }
 
 int
 libnok_receive_data(libnok_context_t *ctx, void **data,
                     size_t datum_size, size_t len)
 {
-  return -1;
+  if (ctx == NULL)
+    return -1;
+  if (datum_size < 1)
+    return -1;
+  if (data == NULL)
+    return -1;
+  if (*data == NULL)
+    return -1;
+  if (len < 1)
+    return -1;
+  return 0;
 }

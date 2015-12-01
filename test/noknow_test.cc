@@ -324,6 +324,80 @@ err_free:
   free(ctx);
 }
 
+static int
+test_send_cb(const void *buf, size_t count)
+{
+  if (count < 1)
+    return -1;
+  return count;
+}
+
+static int
+test_recv_cb(const void *buf, size_t count)
+{
+  if (count < 1)
+    return -1;
+  return count;
+}
+
+/* Test create_*_comm_method() */
+TEST(CtxInstantiation, CreateCommMethod)
+{
+  libnok_communication_method_t *comm_meth = NULL;
+  int fd;
+  const char *hostname = "hostname";
+
+  fd = -1;
+  comm_meth = libnok_create_filedescr_comm_method(fd);
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  fd = 1;
+  comm_meth = libnok_create_filedescr_comm_method(fd);
+  EXPECT_NE((libnok_communication_method_t *)NULL, comm_meth);
+  EXPECT_EQ(LIBNOK_FILEDESCR_COMM, comm_meth->dev);
+  EXPECT_EQ(fd, comm_meth->fd);
+  free(comm_meth);
+
+  comm_meth = libnok_create_internal_comm_method(NULL, strlen(hostname));
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  comm_meth = libnok_create_internal_comm_method(hostname, 0);
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  comm_meth = libnok_create_internal_comm_method(hostname, strlen(hostname));
+  EXPECT_NE((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL) {
+    EXPECT_EQ(LIBNOK_INTERNAL_COMM, comm_meth->dev);
+    EXPECT_EQ(strlen(hostname), comm_meth->hostname_len);
+    EXPECT_STREQ(hostname, comm_meth->hostname);
+  }
+  free(comm_meth);
+
+  comm_meth = libnok_create_callback_comm_method(NULL, NULL);
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  comm_meth = libnok_create_callback_comm_method(&test_send_cb, NULL);
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  comm_meth = libnok_create_callback_comm_method(NULL, &test_recv_cb);
+  EXPECT_EQ((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL)
+    free(comm_meth);
+  comm_meth = libnok_create_callback_comm_method(&test_send_cb, &test_recv_cb);
+  EXPECT_NE((libnok_communication_method_t *)NULL, comm_meth);
+  if (comm_meth != NULL) {
+    EXPECT_EQ(LIBNOK_CALLBACK_COMM, comm_meth->dev);
+    EXPECT_NE((void *)NULL, comm_meth->send_cb);
+    EXPECT_NE((void *)NULL, comm_meth->recv_cb);
+  }
+  free(comm_meth);
+}
+
 /* Test data_for_transfer() */
 TEST(CtxData, ForTransfer)
 {

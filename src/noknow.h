@@ -59,6 +59,7 @@ typedef struct libnok_communication_method_s {
   int fd;
   /* If INTERNAL_COMM, then define the peer's destination address */
   char *hostname;
+  size_t hostname_len;
   /* If CALLBACK_COMM, then define the send and recv callbacks */
   int (*send_cb)(const void *buf, size_t count);
   int (*recv_cb)(const void *buf, size_t count);
@@ -92,6 +93,16 @@ libnok_player_t libnok_get_player(libnok_context_t *ctx);
 /* For the specified instance ctx, get the communication medium */
 libnok_communication_method_t *
 libnok_get_communication_method(libnok_context_t *ctx);
+/* Create a comm method for use in initializing a context */
+libnok_communication_method_t *
+libnok_create_filedescr_comm_method(const int fd);
+libnok_communication_method_t *
+libnok_create_internal_comm_method(const char *hostname, const size_t len);
+libnok_communication_method_t *
+libnok_create_callback_comm_method(int (*send_cb)(const void *buf,
+				                  size_t count),
+                                   int (*recv_cb)(const void *buf,
+				                  size_t count));
 /* Create and initialize a new instance */
 libnok_context_t * libnok_init(libnok_transfer_protocol_t proto,
                                libnok_serialization_t serial,
