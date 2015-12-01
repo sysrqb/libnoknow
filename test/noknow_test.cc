@@ -451,6 +451,7 @@ TEST(CtxData, Receive)
   libnok_context_t *ctx = NULL;
   char *data = NULL, **pdata = NULL;
   size_t datum_size = 0, len = 0;
+  size_t wrote = 0;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
@@ -461,18 +462,25 @@ TEST(CtxData, Receive)
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(-1, libnok_receive_data(NULL, (void **)pdata, datum_size, len));
-  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata, datum_size, len));
+  EXPECT_EQ(-1, libnok_receive_data(NULL, (void **)pdata,
+                                    datum_size, len, &wrote));
+  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata,
+                                    datum_size, len, &wrote));
+  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata,
+                                    datum_size, len, NULL));
   pdata = &data;
-  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata, datum_size, len));
+  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata,
+                                    datum_size, len, &wrote));
   datum_size = sizeof(*data);
   len = 2;
-  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata, datum_size, len));
+  EXPECT_EQ(-1, libnok_receive_data(ctx, (void **)pdata,
+                                    datum_size, len, &wrote));
   data = (char *)malloc(datum_size*len);
   EXPECT_NE((char *)NULL, data);
   if (data == NULL)
     goto err_free;
-  EXPECT_EQ(0, libnok_receive_data(ctx, (void **)pdata, datum_size, len));
+  EXPECT_EQ(0, libnok_receive_data(ctx, (void **)pdata,
+                                   datum_size, len, &wrote));
 
 err_free:
   free(comm_meth);

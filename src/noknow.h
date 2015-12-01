@@ -65,12 +65,28 @@ typedef struct libnok_communication_method_s {
   int (*recv_cb)(const void *buf, size_t count);
 } libnok_communication_method_t;
 
+/* Generic buffer struct */
+typedef struct libnok_data_buffer_s {
+  /* Buffer */
+  void *data;
+  /* Datum length */
+  size_t size;
+  /* Number of *size* byte elements in *data* */
+  size_t count;
+} libnok_data_buffer_t;
+
 /* Prototype for internally-defined structure for holding state. */
 typedef struct libnok_context_s {
   libnok_transfer_protocol_t proto;
   libnok_serialization_t serial;
   libnok_player_t player;
   libnok_communication_method_t *comm;
+  /* Our childs pid, after fork */
+  int child_pid;
+  /* Data queued for child */
+  libnok_data_buffer_t send_buf;
+  /* Data queued for read by application */
+  libnok_data_buffer_t *recv_buf;
 } libnok_context_t;
 
 /* For the specified instance ctx, (re)define the protocol */
@@ -112,7 +128,7 @@ libnok_context_t * libnok_init(libnok_transfer_protocol_t proto,
    an array of arrays of an arbitrary data size, each of size datum_size.
    This means, an application should be able to provide an array of any
    data it has, of type T, and the OT operations should succeed if
-   datum_size is sizeof(T), and data has len elements. */
+   datum_size is sizeof(T), and data has len elements. Returns -1 on error. */
 int libnok_data_for_transfer(libnok_context_t *ctx, void **data,
                              size_t datum_size, size_t len);
 /* Define the expected data which will be received. The bytes received
@@ -120,6 +136,9 @@ int libnok_data_for_transfer(libnok_context_t *ctx, void **data,
    chosen protocol allows receiving more than element then len defines
    how many elements can fit in the data array. In other words, if data
    holds more than one item, then it hold items of type T, where sizeof(T)
-   if datum_len, and data is an array of Ts of length len. */
+   if datum_len, and data is an array of Ts of length len.
+   The number of bytes written in *data* is returned in *wrote*. If the data
+   we have for return is larger than datum_size*len then we return -1 and
+   return the needed size in *wrote*. Returns -1 on error. */
 int libnok_receive_data(libnok_context_t *ctx, void **data,
-                        size_t datum_size, size_t len);
+                        size_t datum_size, size_t len, size_t *wrote);

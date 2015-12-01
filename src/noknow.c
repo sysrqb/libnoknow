@@ -196,6 +196,8 @@ libnok_init(libnok_transfer_protocol_t proto,
   ctx->serial = serial;
   ctx->player = player;
   ctx->comm = comm_meth;
+  ctx->child_pid = -1;
+  ctx->recv_buf = NULL;
   return ctx;
 }
 
@@ -213,13 +215,36 @@ libnok_data_for_transfer(libnok_context_t *ctx, void **data,
     return -1;
   if (len < 1)
     return -1;
+  if (ctx->child_pid > 0) {
+    /* send anything buffered and this new data */
+  } else {
+    if (ctx->send_buf.data != NULL) {
+      /* We already have data buffered. If this occurs then maybe we
+       * should queue it instead of failing, or we should overwrite
+       * the current buffer. As a first pass failing seems sane-ish.
+       */
+      return -1;
+    }
+    ctx->send_buf.data = (void *)malloc(len*datum_size);
+    if (ctx->send_buf.data == NULL)
+      return -1;
+    ctx->send_buf.size = datum_size;
+    ctx->send_buf.count = len;
+  }
   return 0;
+}
+
+void
+get_pending_data(libnok_context_t *ctx)
+{
+  return;
 }
 
 int
 libnok_receive_data(libnok_context_t *ctx, void **data,
-                    size_t datum_size, size_t len)
+                    size_t datum_size, size_t len, size_t *wrote)
 {
+  int size = 0;
   if (ctx == NULL)
     return -1;
   if (datum_size < 1)
@@ -230,5 +255,17 @@ libnok_receive_data(libnok_context_t *ctx, void **data,
     return -1;
   if (len < 1)
     return -1;
+  if (wrote == NULL)
+    return -1;
+  get_pending_data(ctx);
+  if (ctx->recv_buf == NULL)
+    return 0;
+  size = ctx->recv_buf->count*ctx->recv_buf->size;
+  if (ctx->recv_buf->data == NULL && size > 0)
+    return -1;
+  *wrote = size;
+  if (size > datum_size*len)
+    return -1;
+  memcpy(*data, ctx->recv_buf->data, size);
   return 0;
 }
