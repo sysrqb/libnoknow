@@ -37,7 +37,7 @@ libnok_set_protocol(libnok_context_t *ctx, libnok_transfer_protocol_t proto)
 }
 
 int
-libnok_set_serialization(libnok_context_t *ctx,
+libnok_set_peer_serialization(libnok_context_t *ctx,
                          libnok_serialization_t serial)
 {
   if (ctx == NULL)
@@ -46,7 +46,21 @@ libnok_set_serialization(libnok_context_t *ctx,
     return -1;
   if ((int32_t)serial < 0)
     return -1;
-  ctx->serial = serial;
+  ctx->peer_serial = serial;
+  return 0;
+}
+
+int
+libnok_set_ipc_serialization(libnok_context_t *ctx,
+                         libnok_serialization_t serial)
+{
+  if (ctx == NULL)
+    return -1;
+  if (serial >= LIBNOK_NOT_SUPPORTED_SERIAL_METHOD)
+    return -1;
+  if ((int32_t)serial < 0)
+    return -1;
+  ctx->ipc_serial = serial;
   return 0;
 }
 
@@ -88,11 +102,19 @@ libnok_get_transfer_protocol(libnok_context_t *ctx)
 }
 
 libnok_serialization_t
-libnok_get_serialization(libnok_context_t *ctx)
+libnok_get_peer_serialization(libnok_context_t *ctx)
 {
   if (ctx == NULL)
     return LIBNOK_UNKNOWN_SERIAL_METHOD;
-  return ctx->serial;
+  return ctx->peer_serial;
+}
+
+libnok_serialization_t
+libnok_get_ipc_serialization(libnok_context_t *ctx)
+{
+  if (ctx == NULL)
+    return LIBNOK_UNKNOWN_SERIAL_METHOD;
+  return ctx->ipc_serial;
 }
 
 libnok_player_t
@@ -167,15 +189,20 @@ libnok_create_callback_comm_method(int (*send_cb)(const void *buf,
 
 libnok_context_t *
 libnok_init(libnok_transfer_protocol_t proto,
-            libnok_serialization_t serial,
+            libnok_serialization_t peer_serial,
+            libnok_serialization_t ipc_serial,
             libnok_player_t player,
             libnok_communication_method_t *comm_meth)
 
 {
   libnok_context_t *ctx = NULL;
-  if (proto > LIBNOK_NOT_SUPPORTED_XFER_PROTOCOL || proto < 0)
+  if (proto > LIBNOK_NOT_SUPPORTED_XFER_PROTOCOL || (int32_t)proto < 0)
     return NULL;
-  if (serial > LIBNOK_NOT_SUPPORTED_SERIAL_METHOD || serial < 0)
+  if (peer_serial > LIBNOK_NOT_SUPPORTED_SERIAL_METHOD ||
+      (int32_t)peer_serial < 0)
+    return NULL;
+  if (ipc_serial > LIBNOK_NOT_SUPPORTED_SERIAL_METHOD ||
+      (int32_t)ipc_serial < 0)
     return NULL;
   if (player > LIBNOK_UNKNOWN_PLAYER || (int32_t)player < 0)
     return NULL;
@@ -193,7 +220,8 @@ libnok_init(libnok_transfer_protocol_t proto,
   if (ctx == NULL)
     return NULL;
   ctx->proto = proto;
-  ctx->serial = serial;
+  ctx->peer_serial = peer_serial;
+  ctx->ipc_serial = ipc_serial;
   ctx->player = player;
   ctx->comm = comm_meth;
   ctx->child_pid = -1;

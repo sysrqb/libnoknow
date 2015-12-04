@@ -26,6 +26,7 @@ typedef enum libnok_transfer_protocol {
 
 /* List of supported serialization mechanisms */
 typedef enum libnok_serialization {
+  LIBNOK_NO_SERIAL_METHOD,
   LIBNOK_UNKNOWN_SERIAL_METHOD,
   LIBNOK_NOT_SUPPORTED_SERIAL_METHOD
 } libnok_serialization_t;
@@ -78,7 +79,8 @@ typedef struct libnok_data_buffer_s {
 /* Prototype for internally-defined structure for holding state. */
 typedef struct libnok_context_s {
   libnok_transfer_protocol_t proto;
-  libnok_serialization_t serial;
+  libnok_serialization_t peer_serial;
+  libnok_serialization_t ipc_serial;
   libnok_player_t player;
   libnok_communication_method_t *comm;
   /* Our childs pid, after fork */
@@ -92,9 +94,12 @@ typedef struct libnok_context_s {
 /* For the specified instance ctx, (re)define the protocol */
 int libnok_set_protocol(libnok_context_t *ctx,
                         libnok_transfer_protocol_t proto);
-/* For the specified instance ctx, (re)define the serialization method */
-int libnok_set_serialization(libnok_context_t *ctx,
-                             libnok_serialization_t serial);
+/* For the specified instance ctx, (re)define the peer serialization method */
+int libnok_set_peer_serialization(libnok_context_t *ctx,
+                                  libnok_serialization_t serial);
+/* For the specified instance ctx, (re)define the ipc serialization method */
+int libnok_set_ipc_serialization(libnok_context_t *ctx,
+                                 libnok_serialization_t serial);
 /* For the specified instance ctx, (re)define which player we are */
 int libnok_set_player(libnok_context_t *ctx, libnok_player_t player);
 /* For the specified instance ctx, (re)define the communication medium */
@@ -102,8 +107,10 @@ int libnok_set_communication_method(libnok_context_t *ctx,
                                     libnok_communication_method_t *comm_method);
 /* For the specified instance ctx, get the protocol */
 libnok_transfer_protocol_t libnok_get_transfer_protocol(libnok_context_t *ctx);
-/* For the specified instance ctx, get the serialization */
-libnok_serialization_t libnok_get_serialization(libnok_context_t *ctx);
+/* For the specified instance ctx, get the peer serialization */
+libnok_serialization_t libnok_get_peer_serialization(libnok_context_t *ctx);
+/* For the specified instance ctx, get the ipc serialization */
+libnok_serialization_t libnok_get_ipc_serialization(libnok_context_t *ctx);
 /* For the specified instance ctx, get which player we are */
 libnok_player_t libnok_get_player(libnok_context_t *ctx);
 /* For the specified instance ctx, get the communication medium */
@@ -121,7 +128,8 @@ libnok_create_callback_comm_method(int (*send_cb)(const void *buf,
 				                  size_t count));
 /* Create and initialize a new instance */
 libnok_context_t * libnok_init(libnok_transfer_protocol_t proto,
-                               libnok_serialization_t serial,
+                               libnok_serialization_t peer_serial,
+                               libnok_serialization_t ipc_serial,
                                libnok_player_t player,
                                libnok_communication_method_t *comm_meth);
 /* Define the set of data that should be transferred. The set, data, is
