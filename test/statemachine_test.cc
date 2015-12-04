@@ -43,7 +43,7 @@ err_free:
 /* Test state_fill_sequence() with valid input */
 TEST(StateFillSequence, EmptyList)
 {
-  int i;
+  uint32_t i;
   libnok_state_t *ctx = NULL;
   ctx = (libnok_state_t *)malloc(sizeof(*ctx));
   EXPECT_NE((libnok_state_t *)NULL, ctx);
@@ -173,7 +173,7 @@ err_free:
 /* Test state_get_next_state() - verify structure values were updated */
 TEST(StateTrans, GetNextState)
 {
-  int prev, curr, next;
+  int curr, next;
   int seq[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
   int len = sizeof(seq)/sizeof(seq[0]);
   libnok_state_base_t *state_base = NULL;

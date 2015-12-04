@@ -26,7 +26,7 @@
 int
 libnok_state_fill_sequence(libnok_state_base_t *ctx_base)
 {
-  int i;
+  uint32_t i;
   if (ctx_base == NULL)
     return -1;
   if (ctx_base->sequence == NULL)

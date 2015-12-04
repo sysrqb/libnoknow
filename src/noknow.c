@@ -30,7 +30,7 @@ libnok_set_protocol(libnok_context_t *ctx, libnok_transfer_protocol_t proto)
     return -1;
   if (proto >= LIBNOK_NOT_SUPPORTED_XFER_PROTOCOL)
     return -1;
-  if (proto < 0)
+  if ((int32_t)proto < 0)
     return -1;
   ctx->proto = proto;
   return 0;
@@ -44,7 +44,7 @@ libnok_set_serialization(libnok_context_t *ctx,
     return -1;
   if (serial >= LIBNOK_NOT_SUPPORTED_SERIAL_METHOD)
     return -1;
-  if (serial < 0)
+  if ((int32_t)serial < 0)
     return -1;
   ctx->serial = serial;
   return 0;
@@ -57,7 +57,7 @@ libnok_set_player(libnok_context_t *ctx, libnok_player_t player)
     return -1;
   if (player > LIBNOK_UNKNOWN_PLAYER)
     return -1;
-  if (player < 0)
+  if ((int32_t)player < 0)
     return -1;
   ctx->player = player;
   return 0;
@@ -73,7 +73,7 @@ libnok_set_communication_method(libnok_context_t *ctx,
     return -1;
   if (comm_method->dev >= LIBNOK_NOT_SUPPORTED_COMM_DEV)
     return -1;
-  if (comm_method->dev < 0)
+  if ((int32_t)comm_method->dev < 0)
     return -1;
   ctx->comm = comm_method;
   return 0;
@@ -177,7 +177,7 @@ libnok_init(libnok_transfer_protocol_t proto,
     return NULL;
   if (serial > LIBNOK_NOT_SUPPORTED_SERIAL_METHOD || serial < 0)
     return NULL;
-  if (player > LIBNOK_UNKNOWN_PLAYER || player < 0)
+  if (player > LIBNOK_UNKNOWN_PLAYER || (int32_t)player < 0)
     return NULL;
   if (comm_meth == NULL) {
     comm_meth =
@@ -186,7 +186,7 @@ libnok_init(libnok_transfer_protocol_t proto,
       return NULL;
   } else {
     if (comm_meth->dev > LIBNOK_NOT_SUPPORTED_COMM_DEV ||
-        comm_meth->dev < 0)
+        (int32_t)comm_meth->dev < 0)
       return NULL;
   }
   ctx = (libnok_context_t *) malloc(sizeof(*ctx));
@@ -244,7 +244,7 @@ int
 libnok_receive_data(libnok_context_t *ctx, void **data,
                     size_t datum_size, size_t len, size_t *wrote)
 {
-  int size = 0;
+  size_t size = 0;
   if (ctx == NULL)
     return -1;
   if (datum_size < 1)
