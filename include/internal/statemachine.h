@@ -16,6 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef NOK_STATEMACHINE_INT_H
+#define NOK_STATEMACHINE_INT_H 1
+
 #include <stddef.h>
 #include <stdint.h>
 
@@ -36,3 +39,4 @@ struct libnok_state_s {
   int (*statetrans)(int *prev, int *curr, int *next);
 };
 
+#endif /* NOK_STATEMACHINE_INT_H */

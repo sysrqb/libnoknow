@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef NOKNOW_INT_H
+#define NOKNOW_INT_H 1
+
+
 #include <stddef.h>
 
 #include <noknow.h>
@@ -59,3 +63,4 @@ struct libnok_context_s {
   libnok_data_buffer_t *recv_buf;
 };
 
+#endif /* NOKNOW_INT_H */

@@ -16,6 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef NOKSTATEMACHINE_H
+#define NOKSTATEMACHINE_H 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,3 +40,5 @@ int libnok_state_get_next_state(libnok_state_t *ctx);
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* NOKSTATEMACHINE_H */

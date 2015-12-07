@@ -16,6 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef NOKNOW_H
+#define NOKNOW_H 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -128,3 +131,5 @@ int libnok_receive_data(libnok_context_t *ctx, void **data,
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* NOKNOW_H */
