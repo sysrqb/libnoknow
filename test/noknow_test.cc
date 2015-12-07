@@ -20,8 +20,8 @@
 
 #include <gtest/gtest.h>
 
-/* libnok include */
-#include <noknow.h>
+/* We need these defs, too */
+#include <internal/noknow.h>
 
 /* Test init() */
 TEST(CtxInstantiation, CtxInit)

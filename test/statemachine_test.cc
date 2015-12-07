@@ -18,7 +18,7 @@
 
 
 #include <gtest/gtest.h>
-#include <statemachine.h>
+#include <internal/statemachine.h>
 
 /* Test state_fill_sequence() with NULL input */
 TEST(StateFillSequence, NullList)

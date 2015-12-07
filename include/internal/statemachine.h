@@ -19,11 +19,12 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <nokstatemachine.h>
+
 struct libnok_state_base_s {
   size_t len;
   int *sequence;
 };
-typedef struct libnok_state_base_s libnok_state_base_t;
 
 struct libnok_state_s {
   libnok_state_base_t *base;
@@ -33,15 +34,5 @@ struct libnok_state_s {
   int32_t curr_state;
   int32_t next_state;
   int (*statetrans)(int *prev, int *curr, int *next);
-
 };
-typedef struct libnok_state_s libnok_state_t;
 
-
-int libnok_state_fill_sequence(libnok_state_base_t *ctx_base);
-libnok_state_base_t * libnok_state_init_base(int len, int *seq);
-libnok_state_t * libnok_state_init(int (*statetrans)(int *prev,
-                                                      int *curr,
-                                                      int *next),
-                                   libnok_state_base_t *ctx_base);
-int libnok_state_get_next_state(libnok_state_t *ctx);

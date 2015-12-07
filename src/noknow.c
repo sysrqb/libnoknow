@@ -20,7 +20,7 @@
 #include <string.h>
 
 /* libnok include */
-#include <noknow.h>
+#include <internal/noknow.h>
 
 
 int
@@ -262,7 +262,7 @@ libnok_data_for_transfer(libnok_context_t *ctx, void **data,
   return 0;
 }
 
-void
+static void
 get_pending_data(libnok_context_t *ctx)
 {
   return;

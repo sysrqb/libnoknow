@@ -20,7 +20,7 @@
 #include <string.h>
 
 /* libnok include */
-#include <statemachine.h>
+#include <internal/statemachine.h>
 
 
 int

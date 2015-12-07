@@ -16,6 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 
 /* List of supported oblivious transfer protocols */
@@ -53,43 +57,13 @@ typedef enum libnok_communication_device {
 } libnok_communication_device_t;
 
 /* Define how we should communicate with the peer */
-typedef struct libnok_communication_method_s {
-  /* Choose a method */
-  libnok_communication_device_t dev;
-  /* If FILEDESCR_COMM, then define the fd */
-  int fd;
-  /* If INTERNAL_COMM, then define the peer's destination address */
-  char *hostname;
-  size_t hostname_len;
-  /* If CALLBACK_COMM, then define the send and recv callbacks */
-  int (*send_cb)(const void *buf, size_t count);
-  int (*recv_cb)(const void *buf, size_t count);
-} libnok_communication_method_t;
+typedef struct libnok_communication_method_s libnok_communication_method_t;
 
 /* Generic buffer struct */
-typedef struct libnok_data_buffer_s {
-  /* Buffer */
-  void *data;
-  /* Datum length */
-  size_t size;
-  /* Number of *size* byte elements in *data* */
-  size_t count;
-} libnok_data_buffer_t;
+typedef struct libnok_data_buffer_s libnok_data_buffer_t;
 
 /* Prototype for internally-defined structure for holding state. */
-typedef struct libnok_context_s {
-  libnok_transfer_protocol_t proto;
-  libnok_serialization_t peer_serial;
-  libnok_serialization_t ipc_serial;
-  libnok_player_t player;
-  libnok_communication_method_t *comm;
-  /* Our childs pid, after fork */
-  int child_pid;
-  /* Data queued for child */
-  libnok_data_buffer_t send_buf;
-  /* Data queued for read by application */
-  libnok_data_buffer_t *recv_buf;
-} libnok_context_t;
+typedef struct libnok_context_s libnok_context_t;
 
 /* For the specified instance ctx, (re)define the protocol */
 int libnok_set_protocol(libnok_context_t *ctx,
@@ -150,3 +124,7 @@ int libnok_data_for_transfer(libnok_context_t *ctx, void **data,
    return the needed size in *wrote*. Returns -1 on error. */
 int libnok_receive_data(libnok_context_t *ctx, void **data,
                         size_t datum_size, size_t len, size_t *wrote);
+
+#ifdef __cplusplus
+}
+#endif
