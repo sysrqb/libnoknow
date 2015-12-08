@@ -33,28 +33,28 @@ typedef enum libnok_transfer_protocol {
 
 /* List of supported serialization mechanisms */
 typedef enum libnok_serialization {
-  LIBNOK_NO_SERIAL_METHOD,
   LIBNOK_UNKNOWN_SERIAL_METHOD,
+  LIBNOK_NO_SERIAL_METHOD,
   LIBNOK_NOT_SUPPORTED_SERIAL_METHOD
 } libnok_serialization_t;
 
 /* Choose a side, either side */
 typedef enum libnok_player {
+  LIBNOK_UNKNOWN_PLAYER
   LIBNOK_RECEIVER,
   LIBNOK_TRANSMITTER,
-  LIBNOK_UNKNOWN_PLAYER
 } libnok_player_t;
 
 /* How do we transmit and receive data? */
 typedef enum libnok_communication_device {
+  /* Unknown device */
+  LIBNOK_UNKNOWN_COMM_DEV,
   /* Is it an open file descriptor? */
   LIBNOK_FILEDESCR_COMM,
   /* It is using callback function? */
   LIBNOK_CALLBACK_COMM,
   /* Should we establish the connection ourselves? */
   LIBNOK_INTERNAL_COMM,
-  /* Unknown device */
-  LIBNOK_UNKNOWN_COMM_DEV,
   /* Unsupported device */
   LIBNOK_NOT_SUPPORTED_COMM_DEV
 } libnok_communication_device_t;
