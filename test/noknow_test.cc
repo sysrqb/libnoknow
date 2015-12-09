@@ -26,10 +26,10 @@
 /* Test init() */
 TEST(CtxInstantiation, CtxInit)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
@@ -42,42 +42,42 @@ TEST(CtxInstantiation, CtxInit)
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   proto = (libnok_transfer_protocol_t) ((int)proto + 2);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
-  proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
+  proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
 
-  peer_serial = (libnok_serialization_t) ((int)peer_serial + 2);
+  peer_serial = (libnok_serialization_t) ((int)peer_serial + 3);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
-  peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
+  peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
 
-  ipc_serial = (libnok_serialization_t) ((int)ipc_serial + 2);
+  ipc_serial = (libnok_serialization_t) ((int)ipc_serial + 3);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
-  ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
+  ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
 
   player = (libnok_player_t) ((int)player + 2);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
-  player = LIBNOK_UNKNOWN_PLAYER;
+  player = LIBNOK_NOT_DEFINED_PLAYER;
 
   comm_meth->dev =
-    (libnok_communication_device_t) ((int)comm_meth->dev + 2);
+    (libnok_communication_device_t) ((int)comm_meth->dev + 5);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
 
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   ASSERT_NE((libnok_context_t *)NULL, ctx);
@@ -89,17 +89,17 @@ err_free:
 /* Test set_protoco() */
 TEST(CtxInstantiation, SetProtocol)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
@@ -111,7 +111,7 @@ TEST(CtxInstantiation, SetProtocol)
   EXPECT_EQ(-1, libnok_set_protocol(ctx, proto));
   proto = (libnok_transfer_protocol_t) ((int)proto - 1);
   EXPECT_EQ(-1, libnok_set_protocol(ctx, proto));
-  proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
+  proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
   EXPECT_EQ(0, libnok_set_protocol(ctx, proto));
 
 err_free:
@@ -122,39 +122,41 @@ err_free:
 /* Test set_*_serialization() */
 TEST(CtxInstantiation, SetSerialization)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
     goto err_free;
 
+  peer_serial = LIBNOK_NOT_SUPPORTED_SERIAL_METHOD;
   EXPECT_EQ(-1, libnok_set_peer_serialization(NULL, peer_serial));
   peer_serial = (libnok_serialization_t) ((int)peer_serial + 2);
   EXPECT_EQ(-1, libnok_set_peer_serialization(NULL, peer_serial));
   EXPECT_EQ(-1, libnok_set_peer_serialization(ctx, peer_serial));
   peer_serial = (libnok_serialization_t) ((int)peer_serial - 1);
   EXPECT_EQ(-1, libnok_set_peer_serialization(ctx, peer_serial));
-  peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
+  peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
   EXPECT_EQ(0, libnok_set_peer_serialization(ctx, peer_serial));
   EXPECT_EQ(peer_serial, libnok_get_peer_serialization(ctx));
 
+  ipc_serial = LIBNOK_NOT_SUPPORTED_SERIAL_METHOD;
   EXPECT_EQ(-1, libnok_set_ipc_serialization(NULL, ipc_serial));
   ipc_serial = (libnok_serialization_t) ((int)ipc_serial + 2);
   EXPECT_EQ(-1, libnok_set_ipc_serialization(NULL, ipc_serial));
   EXPECT_EQ(-1, libnok_set_ipc_serialization(ctx, ipc_serial));
   ipc_serial = (libnok_serialization_t) ((int)ipc_serial - 1);
   EXPECT_EQ(-1, libnok_set_ipc_serialization(ctx, ipc_serial));
-  ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
+  ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
   EXPECT_EQ(0, libnok_set_ipc_serialization(ctx, ipc_serial));
   EXPECT_EQ(ipc_serial, libnok_get_ipc_serialization(ctx));
 
@@ -166,17 +168,17 @@ err_free:
 /* Test set_player() */
 TEST(CtxInstantiation, SetPlayer)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
@@ -188,7 +190,7 @@ TEST(CtxInstantiation, SetPlayer)
   EXPECT_EQ(-1, libnok_set_player(ctx, player));
   player = (libnok_player_t) ((int)player - 1);
   EXPECT_EQ(-1, libnok_set_player(ctx, player));
-  player = LIBNOK_UNKNOWN_PLAYER;
+  player = LIBNOK_NOT_DEFINED_PLAYER;
   EXPECT_EQ(0, libnok_set_player(ctx, player));
 
 err_free:
@@ -199,22 +201,23 @@ err_free:
 /* Test set_communication_method() */
 TEST(CtxInstantiation, SetCommMethod)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
     goto err_free;
 
+  comm_meth->dev = LIBNOK_NOT_SUPPORTED_COMM_DEV;
   EXPECT_EQ(-1, libnok_set_communication_method(NULL, comm_meth));
   comm_meth->dev =
     (libnok_communication_device_t) ((int)comm_meth->dev + 2);
@@ -225,7 +228,7 @@ TEST(CtxInstantiation, SetCommMethod)
   comm_meth->dev =
     (libnok_communication_device_t) ((int)comm_meth->dev - 1);
   EXPECT_EQ(-1, libnok_set_communication_method(ctx, comm_meth));
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   EXPECT_EQ(0, libnok_set_communication_method(ctx, comm_meth));
 
 err_free:
@@ -236,23 +239,23 @@ err_free:
 /* Test get_transfer_protocol() */
 TEST(CtxInstantiation, GetProtocol)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(LIBNOK_UNKNOWN_XFER_PROTOCOL,
+  EXPECT_EQ(LIBNOK_NOT_DEFINED_XFER_PROTOCOL,
             libnok_get_transfer_protocol(NULL));
   EXPECT_EQ(proto, libnok_get_transfer_protocol(ctx));
   EXPECT_EQ(0, libnok_set_protocol(ctx, proto));
@@ -266,28 +269,28 @@ err_free:
 /* Test get_*_serialization() */
 TEST(CtxInstantiation, GetSerialization)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(LIBNOK_UNKNOWN_SERIAL_METHOD, libnok_get_peer_serialization(NULL));
+  EXPECT_EQ(LIBNOK_NOT_DEFINED_SERIAL_METHOD, libnok_get_peer_serialization(NULL));
   EXPECT_EQ(peer_serial, libnok_get_peer_serialization(ctx));
   EXPECT_EQ(0, libnok_set_peer_serialization(ctx, peer_serial));
   EXPECT_EQ(peer_serial, libnok_get_peer_serialization(ctx));
 
-  EXPECT_EQ(LIBNOK_UNKNOWN_SERIAL_METHOD, libnok_get_ipc_serialization(NULL));
+  EXPECT_EQ(LIBNOK_NOT_DEFINED_SERIAL_METHOD, libnok_get_ipc_serialization(NULL));
   EXPECT_EQ(ipc_serial, libnok_get_ipc_serialization(ctx));
   EXPECT_EQ(0, libnok_set_ipc_serialization(ctx, ipc_serial));
   EXPECT_EQ(ipc_serial, libnok_get_ipc_serialization(ctx));
@@ -300,23 +303,23 @@ err_free:
 /* Test get_player() */
 TEST(CtxInstantiation, GetPlayer)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
     goto err_free;
 
-  EXPECT_EQ(LIBNOK_UNKNOWN_PLAYER, libnok_get_player(NULL));
+  EXPECT_EQ(LIBNOK_NOT_DEFINED_PLAYER, libnok_get_player(NULL));
   EXPECT_EQ(player, libnok_get_player(ctx));
   EXPECT_EQ(0, libnok_set_player(ctx, player));
   EXPECT_EQ(player, libnok_get_player(ctx));
@@ -329,17 +332,17 @@ err_free:
 /* Test get_communication_method() */
 TEST(CtxInstantiation, GetCommMethod)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
 
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
@@ -433,10 +436,10 @@ TEST(CtxInstantiation, CreateCommMethod)
 /* Test data_for_transfer() */
 TEST(CtxData, ForTransfer)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
   char *data = NULL, **pdata = NULL;
@@ -445,7 +448,7 @@ TEST(CtxData, ForTransfer)
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)
@@ -477,10 +480,10 @@ err_free:
 /* Test receive_data() */
 TEST(CtxData, Receive)
 {
-  libnok_transfer_protocol_t proto = LIBNOK_UNKNOWN_XFER_PROTOCOL;
-  libnok_serialization_t peer_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_serialization_t ipc_serial = LIBNOK_UNKNOWN_SERIAL_METHOD;
-  libnok_player_t player = LIBNOK_UNKNOWN_PLAYER;
+  libnok_transfer_protocol_t proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
+  libnok_serialization_t peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_serialization_t ipc_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
+  libnok_player_t player = LIBNOK_NOT_DEFINED_PLAYER;
   libnok_communication_method_t *comm_meth = NULL;
   libnok_context_t *ctx = NULL;
   char *data = NULL, **pdata = NULL;
@@ -490,7 +493,7 @@ TEST(CtxData, Receive)
   comm_meth =
       (libnok_communication_method_t *) malloc(sizeof(*comm_meth));
   ASSERT_NE((libnok_communication_method_t *)NULL, comm_meth);
-  comm_meth->dev = LIBNOK_UNKNOWN_COMM_DEV;
+  comm_meth->dev = LIBNOK_NOT_DEFINED_COMM_DEV;
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_NE((libnok_context_t *)NULL, ctx);
   if (ctx == NULL)

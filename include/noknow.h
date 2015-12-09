@@ -27,20 +27,20 @@ extern "C" {
 
 /* List of supported oblivious transfer protocols */
 typedef enum libnok_transfer_protocol {
-  LIBNOK_UNKNOWN_XFER_PROTOCOL,
+  LIBNOK_NOT_DEFINED_XFER_PROTOCOL,
   LIBNOK_NOT_SUPPORTED_XFER_PROTOCOL
 } libnok_transfer_protocol_t;
 
 /* List of supported serialization mechanisms */
 typedef enum libnok_serialization {
-  LIBNOK_UNKNOWN_SERIAL_METHOD,
+  LIBNOK_NOT_DEFINED_SERIAL_METHOD,
   LIBNOK_NO_SERIAL_METHOD,
   LIBNOK_NOT_SUPPORTED_SERIAL_METHOD
 } libnok_serialization_t;
 
 /* Choose a side, either side */
 typedef enum libnok_player {
-  LIBNOK_UNKNOWN_PLAYER
+  LIBNOK_NOT_DEFINED_PLAYER,
   LIBNOK_RECEIVER,
   LIBNOK_TRANSMITTER,
 } libnok_player_t;
@@ -48,7 +48,7 @@ typedef enum libnok_player {
 /* How do we transmit and receive data? */
 typedef enum libnok_communication_device {
   /* Unknown device */
-  LIBNOK_UNKNOWN_COMM_DEV,
+  LIBNOK_NOT_DEFINED_COMM_DEV,
   /* Is it an open file descriptor? */
   LIBNOK_FILEDESCR_COMM,
   /* It is using callback function? */
