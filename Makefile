@@ -40,7 +40,8 @@ libnoknow_clang.so: ${SRCS}
 		-fPIC -I. -Iinclude -o libnoknow_clang.so.0 ${SRCS}
 
 libnoknow_clangxx.a: ${SRCS}
-	clang++ -Wall -g -isystem -L. -I. -Iinclude -pthread -c ${SRCS}
+	clang++ -Wall -x c++ -g -isystem -L. -I. -Iinclude -pthread -c \
+		${SRCS}
 	ar -rv libnoknow_clangxx.a ${SRCS_OBJ}
 
 libnoknow_clangxx.so: ${SRCS}
