@@ -11,40 +11,38 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-#ifndef NOK_STATEMACHINE_INT_H
-#define NOK_STATEMACHINE_INT_H 1
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include <nokstatemachine.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 struct libnok_state_base_s {
   size_t len;
-  int *sequence;
+  int sequence[];
+  
 };
+typedef struct libnok_state_base_s libnok_state_base_t;
 
 struct libnok_state_s {
   libnok_state_base_t *base;
 
-  /* Explicit assumption there are fewer than INT_MAX (2^32) states */
+  /* Explicit assumption there are fewer than UINT_MAX (2^32) states */
   int32_t prev_state;
   int32_t curr_state;
   int32_t next_state;
   int (*statetrans)(int *prev, int *curr, int *next);
+
 };
+typedef struct libnok_state_s libnok_state_t;
 
-#ifdef __cplusplus
-}
-#endif
 
-#endif /* NOK_STATEMACHINE_INT_H */
+int libnok_state_fill_sequence(libnok_state_base_t *ctx_base);
+libnok_state_base_t * libnok_state_init_base(int len, int seq[]);
+libnok_state_t * libnok_state_init(int (*statetrans)(int *prev,
+                                                      int *curr,
+                                                      int *next),
+                                   libnok_state_base_t *ctx_base);
+int libnok_state_get_next_state(libnok_state_t *ctx);

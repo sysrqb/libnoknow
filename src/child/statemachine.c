@@ -11,40 +11,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NOK_STATEMACHINE_INT_H
-#define NOK_STATEMACHINE_INT_H 1
+#include <child/statemachine.h>
 
-#include <stddef.h>
-#include <stdint.h>
 
-#include <nokstatemachine.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-struct libnok_state_base_s {
-  size_t len;
-  int *sequence;
-};
-
-struct libnok_state_s {
-  libnok_state_base_t *base;
-
-  /* Explicit assumption there are fewer than INT_MAX (2^32) states */
-  int32_t prev_state;
-  int32_t curr_state;
-  int32_t next_state;
-  int (*statetrans)(int *prev, int *curr, int *next);
-};
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* NOK_STATEMACHINE_INT_H */

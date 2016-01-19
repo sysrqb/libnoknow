@@ -4,4 +4,6 @@ ext/googletest
 *.gcno
 *.gcda
 *.gcov
+*.gch
+*.*.sw*
 nok_*

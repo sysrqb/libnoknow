@@ -16,35 +16,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NOK_STATEMACHINE_INT_H
-#define NOK_STATEMACHINE_INT_H 1
+/* Read and write RPCs. TODO, spawn rpc thread */
 
-#include <stddef.h>
+#ifndef NOK_RPC_H
+#define NOK_RPC_H 1
+
 #include <stdint.h>
 
-#include <nokstatemachine.h>
+#include <internal/noknow.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-struct libnok_state_base_s {
-  size_t len;
-  int *sequence;
-};
-
-struct libnok_state_s {
-  libnok_state_base_t *base;
-
-  /* Explicit assumption there are fewer than INT_MAX (2^32) states */
-  int32_t prev_state;
-  int32_t curr_state;
-  int32_t next_state;
-  int (*statetrans)(int *prev, int *curr, int *next);
-};
+int 
+__attribute__ ((visibility("hidden")))
+rpc_read_message_fd(libnok_context_t *ctx);
+int
+__attribute__ ((visibility("hidden")))
+rpc_send_message_fd(libnok_context_t *ctx);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* NOK_STATEMACHINE_INT_H */
+#endif /* NOK_RPC_H */

@@ -16,35 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NOK_STATEMACHINE_INT_H
-#define NOK_STATEMACHINE_INT_H 1
+#ifndef NOK_OT_DATA_H
+#define NOK_OT_DATA_H 1
 
-#include <stddef.h>
-#include <stdint.h>
+#include <noknow.h>
 
-#include <nokstatemachine.h>
+typedef struct internal_transfer_context_s {
+  /* The protocol we're following */
+  libnok_transfer_protocol_t proto;
+  /* The way we serialize the bytes */
+  libnok_serialization_t peer_serial;
+  /* The way we serialize the bytes */
+  libnok_serialization_t ipc_serial;
+  /* Our character in this game */
+  libnok_player_t player;
+  /* How we send and recv data from the other player */
+  libnok_communication_method_t *comm;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-struct libnok_state_base_s {
-  size_t len;
-  int *sequence;
-};
-
-struct libnok_state_s {
-  libnok_state_base_t *base;
-
-  /* Explicit assumption there are fewer than INT_MAX (2^32) states */
-  int32_t prev_state;
-  int32_t curr_state;
-  int32_t next_state;
-  int (*statetrans)(int *prev, int *curr, int *next);
-};
-
+ 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* NOK_STATEMACHINE_INT_H */
+#endif /* NOK_OT_DATA_H */

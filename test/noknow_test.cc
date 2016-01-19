@@ -50,14 +50,14 @@ TEST(CtxInstantiation, CtxInit)
     goto err_free;
   proto = LIBNOK_NOT_DEFINED_XFER_PROTOCOL;
 
-  peer_serial = (libnok_serialization_t) ((int)peer_serial + 3);
+  peer_serial = (libnok_serialization_t) ((int)peer_serial + 4);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)
     goto err_free;
   peer_serial = LIBNOK_NOT_DEFINED_SERIAL_METHOD;
 
-  ipc_serial = (libnok_serialization_t) ((int)ipc_serial + 3);
+  ipc_serial = (libnok_serialization_t) ((int)ipc_serial + 4);
   ctx = libnok_init(proto, peer_serial, ipc_serial, player, comm_meth);
   EXPECT_EQ((libnok_context_t *)NULL, ctx);
   if (ctx != NULL)

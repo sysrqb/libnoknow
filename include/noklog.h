@@ -16,35 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NOK_STATEMACHINE_INT_H
-#define NOK_STATEMACHINE_INT_H 1
+#ifndef NOKNOW_LOG_H
+#define NOKNOW_LOG_H 1
+#include <stdio.h>
 
-#include <stddef.h>
-#include <stdint.h>
+#include <noknow.h>
 
-#include <nokstatemachine.h>
+typedef enum libnok_log_level {
+  NOK_VERBOSITY_ERROR,
+  NOK_VERBOSITY_WARNING,
+  NOK_VERBOSITY_NOTICE,
+  NOK_VERBOSITY_INFO = 4,
+  NOK_VERBOSITY_DEBUG = 8
+} libnok_log_level_t;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+int libnok_log_set_logs(libnok_context_t *ctx, FILE *out, FILE *err);
+int libnok_log_set_log_verbosity(libnok_context_t *ctx,
+                                 libnok_log_level_t level);
 
-struct libnok_state_base_s {
-  size_t len;
-  int *sequence;
-};
-
-struct libnok_state_s {
-  libnok_state_base_t *base;
-
-  /* Explicit assumption there are fewer than INT_MAX (2^32) states */
-  int32_t prev_state;
-  int32_t curr_state;
-  int32_t next_state;
-  int (*statetrans)(int *prev, int *curr, int *next);
-};
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* NOK_STATEMACHINE_INT_H */
+#endif /* NOKNOW_LOG_H */

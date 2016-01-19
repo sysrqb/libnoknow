@@ -35,6 +35,7 @@ typedef enum libnok_transfer_protocol {
 typedef enum libnok_serialization {
   LIBNOK_NOT_DEFINED_SERIAL_METHOD,
   LIBNOK_NO_SERIAL_METHOD,
+  LIBNOK_BUILTIN,
   LIBNOK_NOT_SUPPORTED_SERIAL_METHOD
 } libnok_serialization_t;
 
