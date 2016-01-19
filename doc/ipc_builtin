@@ -1,0 +1,88 @@
+The purpose of this protocol is for providing a built in IPC mechanism
+and ensure this library may be compiled without adding another external
+dependency.
+
+This won't be efficient, but it serves a purpose.(When available) use
+one of the other supported external serialization libraries.
+
+
+Protocol specification:
+
+
+Message constant values:
+Versions: 0
+
+Message Domains:
+  NOT_DEFINED: 0
+  CONTROL: 1
+  PROTOCOL: 2
+  STATUS: 4
+
+Control Tasks:
+  SETPROTOCOL
+  SETIPCSERIAL
+  SETPEERSERIAL
+  SETCOMMMETH
+  SETXFERPROTO
+  GETPROTOCOL
+  GETIPCSERIAL
+  GETPEERSERIAL
+  GETCOMMMETH
+  GETXFERPROTO
+  FATALITY
+
+VERBOSITY Levels:
+  ERROR: 0
+  WARNING: 1
+  NOTICE: 2
+  INFO: 4
+  DEBUG: 8
+
+Protocols:
+  UNKNOWN
+  EGL85
+
+All field lengths are 1-byte multiples. Multi-byte field byte-ordering is
+platform dependent.
+
+NOT_DEFINED message format:
+  VERSION: 1
+  TYPE: 1 (NOT_DEFINED)
+
+Note, NOT_DEFINED messages should never be sent. They are a safe default.
+
+
+CONTROL message format:
+  VERSION: 1
+  TYPE: 1 (CONTROL)
+  TASK: 2
+  TASKINFOLEN: 2
+  TASKINFO: TASKINFOLEN
+
+
+PROTOCOL message format:
+  VERSION: 1
+  TYPE: 1 (PROTOCOL)
+  PROTOCOL: 1
+  DATALEN: 2
+  DATA: DATALEN
+
+DATUM submessage format is protocol dependent.
+
+EGL85 DATUM submessage format:
+  PROTOSUBTYPE: 1
+  DATUM: DATALEN-1
+
+EGL85 PROTOSUBTYPES:
+  SETPLAYER
+  SETMESSAGES
+  SETSELECTION
+
+
+STATUS message format:
+  VERSION: 1
+  TYPE: 1 (STATUS)
+  VERBOSITY: 1
+  MSGLEN: 2
+  MSG: MSGLEN
+
