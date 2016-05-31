@@ -22,6 +22,7 @@
 /* libnok include */
 #include <internal/nok_strndup.h>
 #include <internal/noknow.h>
+#include <internal/rpc.h>
 
 
 int
@@ -266,6 +267,19 @@ libnok_data_for_transfer(libnok_context_t *ctx, void **data,
 static void
 get_pending_data(libnok_context_t *ctx)
 {
+  if (ctx == NULL || ctx->comm)
+    return;
+  switch (ctx->comm->dev) {
+  case LIBNOK_FILEDESCR_COMM:
+    rpc_read_message_fd(ctx);
+    break;
+  default:
+  case LIBNOK_NOT_DEFINED_COMM_DEV:
+  case LIBNOK_CALLBACK_COMM:
+  case LIBNOK_INTERNAL_COMM:
+  case LIBNOK_NOT_SUPPORTED_COMM_DEV:
+    break;
+  }
   return;
 }
 
