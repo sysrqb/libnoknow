@@ -21,8 +21,10 @@
 
 
 #include <stddef.h>
+#include <stdint.h>
 
 #include <noknow.h>
+#include <internal/log.h>
 
 /* Define how we should communicate with the peer */
 struct libnok_communication_method_s {
@@ -57,10 +59,16 @@ struct libnok_context_s {
   libnok_communication_method_t *comm;
   /* Our childs pid, after fork */
   int child_pid;
+  /* Log context */
+  nok_log_ctx_t logctx;
   /* Data queued for child */
   libnok_data_buffer_t send_buf;
   /* Data queued for read by application */
   libnok_data_buffer_t *recv_buf;
+  /* Count how many ipc messages were lost due to
+   * failure (NOMEM, etc)
+   */
+  uint16_t status_msg_failure_count;
 };
 
 #endif /* NOKNOW_INT_H */
