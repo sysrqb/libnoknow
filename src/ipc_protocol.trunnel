@@ -1,0 +1,147 @@
+/* *******BEGIN CONSTANTS******* */
+
+/* Define the known message domains */
+const DOMAIN_NOT_DEFINED = 0;
+const DOMAIN_CONTROL = 1;
+const DOMAIN_PROTOCOL = 2;
+const DOMAIN_STATUS = 4;
+
+/* Define CONTROL tasks */
+const CONTROL_FATALITY = 0;
+const CONTROL_SET_XFER_PROTO = 1;
+const CONTROL_SET_IPC_SERIAL = 2;
+const CONTROL_SET_COMM_METH = 4;
+const CONTROL_GET_XFER_PROTO = 8;
+const CONTROL_GET_IPC_SERIAL = 16;
+const CONTROL_GET_COMM_METH = 32;
+
+/* Define FATALITY conditions */
+const FATALITY_IMMEDIATE = 0;
+const FATALITY_ASAP = 1;
+
+/* Define supported XFERPROTOs */
+const XFERPROTO_EGL85 = 0;
+
+/* Define supported SERIALizations */
+const SERIAL_BUILTIN = 0;
+
+/* Define COMM_DEVICE */
+const COMM_DEV_FILEDESCR = 0;
+const COMM_DEV_CALLBACK = 1;
+const COMM_DEV_INTERNAL = 2;
+
+/* Define PROTOCOL tasks */
+const PROTOCOL_SETPLAYER = 0;
+const PROTOCOL_SETMESSAGES = 1;
+const PROTOCOL_SETSELECTION = 2;
+
+/* Define PROTOCOL players */
+const PROTO_PLAYER0 = 0;
+const PROTO_PLAYER1 = 1;
+
+/* Define STATUS_VERBOSITY */
+const VERBOSITY_ERROR = 0;
+const VERBOSITY_WARNING = 1;
+const VERBOSITY_NOTICE = 2;
+const VERBOSITY_INFO = 4;
+const VERBOSITY_DEBUG = 8;
+
+
+/* *******END CONSTANTS******* */
+
+
+/* Define FATALITY task */
+struct control_fatality {
+  u8 fatality_time IN [FATALITY_IMMEDIATE, FATALITY_ASAP];
+  nulterm message;
+}
+
+/* Define [GS]ETXFERPROTO task */
+struct control_xfer_protocol {
+  u8 proto IN [XFERPROTO_EGL85];
+}
+
+/* Define [GS]ETIPCSERIAL task */
+struct control_serial {
+  u8 serialization IN [SERIAL_BUILTIN];
+}
+
+/* Define [GS]COMMMETH task */
+struct control_comm_method {
+  u8 device;
+  union method[device] {
+    COMM_DEV_FILEDESCR: u16 fd;
+    COMM_DEV_CALLBACK: fail;
+    COMM_DEV_INTERNAL: fail;
+    default: fail;
+  };
+}
+
+
+/* Define a CONTROL domain message */
+struct domain_control {
+  u8 task;
+  u16 tasklen;
+  union task_info[task] {
+    CONTROL_FATALITY: struct control_fatality final_countdown;
+    CONTROL_SET_XFER_PROTO: struct control_xfer_protocol setproto;
+    CONTROL_SET_IPC_SERIAL: struct control_serial setipcserial;
+    CONTROL_SET_COMM_METH: struct control_comm_method setcommmeth;
+    CONTROL_GET_XFER_PROTO: struct control_xfer_protocol getproto;
+    CONTROL_GET_IPC_SERIAL: struct control_serial getipcserial;
+    CONTROL_GET_COMM_METH: struct control_comm_method getcommmeth;
+    default: fail;
+  };
+}
+
+/* Define EGL85 messages */
+struct proto_egl85_messages {
+  u32 msgslen;
+  u8 msgcount;
+  u32 msglens[msgcount];
+  char msgs[msgslen];
+}
+
+/* Define EGL85 protocol message */
+struct proto_egl85 {
+  u8 task;
+  union tasks[task] {
+    PROTOCOL_SETPLAYER: u8 player IN [PROTO_PLAYER0, PROTO_PLAYER1];
+    PROTOCOL_SETMESSAGES: struct proto_egl85_messages msgs;
+    PROTOCOL_SETSELECTION: u8 selection;
+    default: fail;
+  };
+}
+
+
+/* Define PROTOCOL domain message */
+struct domain_protocol {
+  u8 name;
+  union proto[name] {
+    XFERPROTO_EGL85: struct proto_egl85 egl85;
+    default: fail;
+  };
+}
+
+/* Define STATUS domain message */
+struct domain_status {
+  u8 verbosity IN [VERBOSITY_ERROR, VERBOSITY_WARNING, VERBOSITY_NOTICE,
+                   VERBOSITY_INFO, VERBOSITY_DEBUG];
+  u16 msglen;
+  nulterm msg;
+}
+
+/* Define the base structure */
+struct domain_base {
+  u8 version IN [0];
+  u32 length;
+  u8 message_domain IN [DOMAIN_NOT_DEFINED, DOMAIN_CONTROL, DOMAIN_PROTOCOL,
+                        DOMAIN_STATUS];
+  union domain_message[message_domain] {
+    DOMAIN_NOT_DEFINED: fail;
+    DOMAIN_CONTROL: struct domain_control domcon;
+    DOMAIN_PROTOCOL: struct domain_protocol domproto;
+    DOMAIN_STATUS: struct domain_status domstat;
+    default: fail;
+  };
+}
