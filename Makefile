@@ -1,13 +1,16 @@
 GTEST_DIR=ext/googletest/googletest
-SRCS= src/statemachine.c src/noknow.c
+SRCS= src/compat/nok_snprintf.c src/compat/nok_strndup.c src/log.c src/rpc.c src/statemachine.c src/noknow.c src/ipc_protocol.c src/ipc_messenger.c src/trunnel.c
 TESTS= test/statemachine_test.cc test/noknow_test.cc
-SRCS_OBJ= statemachine.o noknow.o
+SRCS_OBJ= nok_snprintf.o nok_strndup.o log.o ipc_protocol.o ipc_messenger.o rpc.o statemachine.o noknow.o
 
 
-.PHONY: test clean nok gxx clang clangxx
+.PHONY: test clean nok nokxx gxx clang clangxx
 
 nok: ${SRCS} libnoknow.a libnoknow.so
 	gcc -o nok_bin src/empty_main.c libnoknow.so.0
+
+nokxx: ${SRCS} libnoknow_gxx.a libnoknow_gxx.so
+	g++ -o nok_binxx src/empty_main.c libnoknow.so.0
 
 libnoknow.a: ${SRCS}
 	gcc -Wall -g -fPIC -fstack-protector-all -isystem -L. -Iinclude -pthread -c ${SRCS}
@@ -16,6 +19,10 @@ libnoknow.a: ${SRCS}
 libnoknow.so: ${SRCS}
 	gcc -Wall -g -shared -Wl,-soname,libnoknow.so.0 \
 		-fPIC -I. -Iinclude -o libnoknow.so.0 ${SRCS}
+
+libnoknow_c89.a: ${SRCS}
+	gcc -Wall -g -std=c89 -fPIC -fstack-protector-all -isystem -L. -Iinclude -pthread -c ${SRCS}
+	ar -rv libnoknow_c89.a ${SRCS_OBJ}
 
 gxx: libnoknow_gxx.a libnoknow_gxx.so
 
@@ -36,7 +43,7 @@ libnoknow_clang.a: ${SRCS}
 	ar -rv libnoknow_clang.a ${SRCS_OBJ}
 
 libnoknow_clang.so: ${SRCS}
-	gcc -Wall -g -shared -Wl,-soname,libnoknow.so.0 \
+	clang -Wall -g -shared -Wl,-soname,libnoknow.so.0 \
 		-fPIC -I. -Iinclude -o libnoknow_clang.so.0 ${SRCS}
 
 libnoknow_clangxx.a: ${SRCS}
@@ -45,7 +52,7 @@ libnoknow_clangxx.a: ${SRCS}
 	ar -rv libnoknow_clangxx.a ${SRCS_OBJ}
 
 libnoknow_clangxx.so: ${SRCS}
-	gcc -Wall -g -shared -Wl,-soname,libnoknow.so.0 \
+	clang++ -Wall -x c++ -g -shared -Wl,-soname,libnoknow.so.0 \
 		-fPIC -I. -Iinclude -o libnoknow_clangxx.so.0 ${SRCS}
 
 libgtest.a: ${GTEST_DIR}/src/gtest-all.cc
