@@ -20,6 +20,7 @@
 #include <string.h>
 
 /* libnok include */
+#include <internal/nok_strndup.h>
 #include <internal/noknow.h>
 
 
@@ -160,7 +161,7 @@ libnok_create_internal_comm_method(const char *hostname, const size_t len)
   if (comm == NULL)
     return NULL;
   memset(comm, 0, sizeof(*comm));
-  comm->hostname = strndup(hostname, len);
+  comm->hostname = nok_strndup(hostname, len);
   comm->hostname_len = len;
   comm->dev = LIBNOK_INTERNAL_COMM;
   return comm;
