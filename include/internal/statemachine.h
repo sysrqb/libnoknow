@@ -24,6 +24,10 @@
 
 #include <nokstatemachine.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct libnok_state_base_s {
   size_t len;
   int *sequence;
@@ -38,5 +42,9 @@ struct libnok_state_s {
   int32_t next_state;
   int (*statetrans)(int *prev, int *curr, int *next);
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* NOK_STATEMACHINE_INT_H */
